@@ -1,0 +1,227 @@
+@import "tailwindcss";
+@import "./styles/globals.css";
+
+/* ── Background Effects ── */
+.ll-hero-grid {
+  @apply absolute inset-0 pointer-events-none;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 1) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: var(--ll-grid-opacity);
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 10%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, black 10%, transparent 80%);
+  z-index: 1;
+}
+
+.ll-orb {
+  @apply absolute rounded-full pointer-events-none;
+  filter: blur(100px);
+  opacity: var(--ll-orb-opacity);
+  z-index: 0;
+}
+
+/* ── Page Layout ── */
+.crm-page-container {
+  @apply flex flex-col lg:flex-row min-h-screen bg-background text-foreground relative overflow-hidden w-full max-w-full;
+}
+
+.crm-main-content {
+  @apply w-full relative z-10 transition-all duration-500 lg:ml-[16rem] lg:w-[calc(100%-16rem)];
+}
+
+.crm-page-title {
+  @apply text-3xl font-bold tracking-tight;
+  color: var(--crm-fg-strong);
+  font-family: var(--ll-font-display);
+}
+
+.crm-page-subtitle {
+  @apply text-[10px] font-bold uppercase tracking-[0.2em];
+  color: var(--crm-muted-dim);
+}
+
+/* ── Component Primitives ── */
+.crm-card {
+  @apply rounded-xl p-6 transition-all duration-300;
+  background: var(--crm-glass);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--crm-glass-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.dark .crm-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.crm-card-hover {
+  @apply hover:-translate-y-1 hover:border-crm-teal/30 hover:shadow-xl hover:shadow-crm-teal/5;
+}
+
+/*
+ * Top-only accent: a soft line sits just under the top edge, brightens briefly,
+ * then fades out in place (no travel along right / bottom / left).
+ */
+.ll-moving-edge {
+  position: relative;
+  isolation: isolate;
+}
+
+.ll-moving-edge::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  top: 2px;
+  left: 50%;
+  bottom: auto;
+  right: auto;
+  width: min(78%, 22rem);
+  height: 2px;
+  margin: 0;
+  border-radius: 999px;
+  transform: translateX(-50%) scaleX(0.35);
+  transform-origin: 50% 50%;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 212, 170, 0.2),
+    var(--crm-teal),
+    rgba(0, 212, 170, 0.2),
+    transparent
+  );
+}
+
+.ll-moving-edge:hover::before {
+  animation: ll-top-fade 2.75s ease-in-out infinite;
+}
+
+.ll-moving-edge:hover {
+  border-color: rgba(0, 212, 170, 0.32);
+}
+
+@keyframes ll-top-fade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scaleX(0.2);
+  }
+  18% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1);
+  }
+  42% {
+    opacity: 0.55;
+    transform: translateX(-50%) scaleX(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleX(0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ll-moving-edge:hover::before {
+    animation: none;
+    opacity: 0.65;
+    transform: translateX(-50%) scaleX(0.85);
+    top: 2px;
+    left: 50%;
+  }
+}
+
+/* Table System */
+.crm-table-container {
+  @apply rounded-[1.5rem] overflow-x-auto pb-2;
+  background: var(--crm-glass);
+  border: 1px solid var(--crm-glass-border);
+}
+
+.crm-table-thead {
+  background: var(--muted);
+  @apply opacity-80;
+}
+
+.crm-table-th {
+  @apply px-6 py-4 text-[10px] font-bold uppercase tracking-widest;
+  color: var(--crm-muted-dim);
+  border-bottom: 1px solid var(--crm-border);
+}
+
+.crm-table-tr {
+  @apply transition-colors border-b border-white/5;
+  &:last-child { border-bottom: 0; }
+  &:hover { background: var(--crm-teal-glow); }
+}
+
+/* Input System */
+.crm-input {
+  @apply w-full px-4 py-3 rounded-xl text-sm font-medium focus:outline-none transition-all;
+  background: var(--crm-navy-deep);
+  border: 1px solid var(--crm-border);
+  color: var(--foreground);
+  &:focus {
+    border-color: var(--crm-teal);
+    box-shadow: 0 0 0 3px var(--crm-teal-glow);
+  }
+}
+
+.crm-btn-primary {
+  @apply px-6 py-2.5 rounded-lg font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2;
+  background: linear-gradient(135deg, #00D4AA, #00B894);
+  color: #0B1120;
+  box-shadow: 0 4px 20px rgba(0, 212, 170, 0.2);
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0, 212, 170, 0.3); }
+  &:active { transform: translateY(0); }
+}
+
+/* ── Custom Scrollbar Utility ── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full hover:bg-primary/50 transition-colors;
+}
+
+/* ── Sidebar Custom Redesign ── */
+.crm-sidebar-logo-square {
+  @apply w-12 h-12 bg-crm-teal rounded-2xl flex items-center justify-center text-[#0B1120] font-black shadow-lg shadow-crm-teal/20 transition-transform hover:scale-105 active:scale-95;
+  font-size: 1.25rem;
+}
+
+.crm-sidebar-active {
+  @apply bg-crm-teal text-[#0B1120] font-bold shadow-[0_8px_24px_rgba(0,212,170,0.25)] border-transparent transition-all duration-300;
+}
+
+.crm-sidebar-inactive {
+  @apply text-muted-foreground hover:text-foreground hover:bg-muted tracking-tight transition-all duration-200;
+}
+
+.crm-sidebar-user-card {
+  @apply bg-muted/30 rounded-[1.75rem] p-5 border border-border shadow-sm mt-auto transition-all hover:bg-muted/50 hover:border-primary/20;
+}
+
+.crm-sidebar-avatar {
+  @apply w-10 h-10 rounded-full flex items-center justify-center font-bold text-base bg-primary/10 text-primary border border-primary/20 shadow-inner;
+}
+
+.crm-sidebar-signout {
+  @apply flex items-center gap-3 mt-3.5 pt-3.5 border-t border-border text-red-500 font-bold uppercase tracking-widest text-[9px] hover:text-red-400 transition-colors active:scale-95;
+}
+
+.crm-sidebar-label {
+  @apply text-[9px] font-bold uppercase tracking-[0.25em] text-muted-foreground mb-3 ml-2 transition-opacity;
+}
+
+/* ── Numerical Precision Typography ── */
+.font-mono-data {
+  font-family: 'JetBrains Mono', monospace;
+  @apply tracking-tighter;
+}
